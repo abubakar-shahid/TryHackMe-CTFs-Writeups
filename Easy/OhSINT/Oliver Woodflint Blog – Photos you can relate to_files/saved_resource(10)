@@ -1,0 +1,8 @@
+<!DOCTYPE HTML>
+<html>
+<body>
+<img src='//ib.adnxs.com/getuid?%2F%2Fsync.adkernel.com%2Fuser-sync%3Fzone%3D204369%26dsp%3D648016%26t%3Dimage%26uid%3D%24UID' style='display:none'>
+<script>function sync(){window.location.replace('https://s.ad.smaato.net/c/?dspId=1002177&dspCookie=A2530958350875504488&gdpr=0&gdpr_consent=');}
+if(window.addEventListener){window.addEventListener('load',sync);} else if(window.attachEvent){window.attachEvent('onload',sync);} else {window.onload=sync;}</script>
+</body>
+</html>

@@ -1,0 +1,819 @@
+( function ( g ) {
+
+  var t = {
+      PLATFORM_WINDOWS: 'windows',
+      PLATFORM_IPHONE: 'iphone',
+      PLATFORM_IPOD: 'ipod',
+      PLATFORM_IPAD: 'ipad',
+      PLATFORM_BLACKBERRY: 'blackberry',
+      PLATFORM_BLACKBERRY_10: 'blackberry_10',
+      PLATFORM_SYMBIAN: 'symbian_series60',
+      PLATFORM_SYMBIAN_S40: 'symbian_series40',
+      PLATFORM_J2ME_MIDP: 'j2me_midp',
+      PLATFORM_ANDROID: 'android',
+      PLATFORM_ANDROID_TABLET: 'android_tablet',
+      PLATFORM_FIREFOX_OS: 'firefoxOS',
+      PLATFORM_MOBILE_GENERIC: 'mobile_generic',
+
+      userAgent : false, // Shortcut to the browser User Agent String.
+      matchedPlatformName : false, // Matched platform name. False otherwise.
+      matchedUserAgentName : false, // Matched UA String. False otherwise.
+
+      init: function() {
+        try {
+          t.userAgent = g.navigator.userAgent.toLowerCase();
+          t.getPlatformName();
+          t.getMobileUserAgentName();
+        }	catch ( e ) {
+          console.error( e );
+        }
+      },
+
+      initForTest: function( userAgent ) {
+        t.matchedPlatformName = false;
+        t.matchedUserAgentName = false;
+        try {
+          t.userAgent = userAgent.toLowerCase();
+          t.getPlatformName();
+          t.getMobileUserAgentName();
+        }	catch ( e ) {
+          console.error( e );
+        }
+      },
+
+      /**
+       * This method detects the mobile User Agent name.
+       */
+      getMobileUserAgentName: function() {
+        if ( t.matchedUserAgentName !== false )
+          return t.matchedUserAgentName;
+
+        if ( t.userAgent === false )
+          return false;
+
+        if ( t.isChromeForIOS() )
+          t.matchedUserAgentName = 'chrome-for-ios';
+        else if ( t.isTwitterForIpad() )
+          t.matchedUserAgentName =  'twitter-for-ipad';
+        else if ( t.isTwitterForIphone() )
+          t.matchedUserAgentName =  'twitter-for-iphone';
+        else if ( t.isIPhoneOrIPod() )
+          t.matchedUserAgentName = 'iphone';
+        else if ( t.isIPad() )
+          t.matchedUserAgentName = 'ipad';
+        else if ( t.isAndroidTablet() )
+          t.matchedUserAgentName = 'android_tablet';
+        else if ( t.isAndroid() )
+          t.matchedUserAgentName = 'android';
+        else if ( t.isBlackberry10() )
+          t.matchedUserAgentName = 'blackberry_10';
+        else if ( has( 'blackberry' ) )
+          t.matchedUserAgentName = 'blackberry';
+        else if ( t.isBlackberryTablet() )
+          t.matchedUserAgentName = 'blackberry_tablet';
+        else if ( t.isWindowsPhone7() )
+          t.matchedUserAgentName = 'win7';
+        else if ( t.isWindowsPhone8() )
+          t.matchedUserAgentName = 'winphone8';
+        else if ( t.isOperaMini() )
+          t.matchedUserAgentName = 'opera-mini';
+        else if ( t.isOperaMobile() )
+          t.matchedUserAgentName = 'opera-mobi';
+        else if ( t.isKindleFire() )
+          t.matchedUserAgentName = 'kindle-fire';
+        else if ( t.isSymbianPlatform() )
+          t.matchedUserAgentName = 'series60';
+        else if ( t.isFirefoxMobile() )
+          t.matchedUserAgentName = 'firefox_mobile';
+        else if ( t.isFirefoxOS() )
+          t.matchedUserAgentName = 'firefoxOS';
+        else if ( t.isFacebookForIphone() )
+          t.matchedUserAgentName = 'facebook-for-iphone';
+        else if ( t.isFacebookForIpad() )
+          t.matchedUserAgentName = 'facebook-for-ipad';
+        else if ( t.isWordPressForIos() )
+          t.matchedUserAgentName = 'ios-app';
+        else if ( has( 'iphone' ) )
+          t.matchedUserAgentName = 'iphone-unknown';
+        else if ( has( 'ipad' ) )
+          t.matchedUserAgentName = 'ipad-unknown';
+
+        return t.matchedUserAgentName;
+      },
+
+      /**
+       * This method detects the mobile platform name.
+       */
+      getPlatformName : function() {
+        if ( t.matchedPlatformName !== false )
+          return t.matchedPlatformName;
+
+        if ( t.userAgent === false )
+          return false;
+
+        if ( has( 'windows ce' ) || has( 'windows phone' ) ) {
+          t.matchedPlatformName = t.PLATFORM_WINDOWS;
+        } else if ( has( 'ipad' ) ) {
+          t.matchedPlatformName = t.PLATFORM_IPAD;
+        } else if ( has( 'ipod' ) ) {
+          t.matchedPlatformName = t.PLATFORM_IPOD;
+        } else if ( has( 'iphone' ) ) {
+          t.matchedPlatformName = t.PLATFORM_IPHONE;
+        } else if ( has( 'android' ) ) {
+          if ( t.isAndroidTablet() )
+            t.matchedPlatformName = t.PLATFORM_ANDROID_TABLET;
+          else
+            t.matchedPlatformName = t.PLATFORM_ANDROID;
+        } else if ( t.isKindleFire() ) {
+          t.matchedPlatformName = t.PLATFORM_ANDROID_TABLET;
+        } else if ( t.isBlackberry10() ) {
+          t.matchedPlatformName = t.PLATFORM_BLACKBERRY_10;
+        } else if ( has( 'blackberry' ) ) {
+          t.matchedPlatformName = t.PLATFORM_BLACKBERRY;
+        } else if ( t.isBlackberryTablet() ) {
+          t.matchedPlatformName = t.PLATFORM_BLACKBERRY;
+        } else if ( t.isSymbianPlatform() ) {
+          t.matchedPlatformName = t.PLATFORM_SYMBIAN;
+        } else if ( t.isSymbianS40Platform() ) {
+          t.matchedPlatformName = t.PLATFORM_SYMBIAN_S40;
+        } else if ( t.isJ2MEPlatform() ) {
+          t.matchedPlatformName = t.PLATFORM_J2ME_MIDP;
+        } else if ( t.isFirefoxOS() ) {
+          t.matchedPlatformName = t.PLATFORM_FIREFOX_OS;
+        } else if ( t.isFirefoxMobile() ) {
+          t.matchedPlatformName = t.PLATFORM_MOBILE_GENERIC;
+        }
+
+        return t.matchedPlatformName;
+      },
+
+
+      /**
+       * Detect the BlackBerry OS version.
+       *
+       * Note: This is for smartphones only. Does not work on BB tablets.
+       */
+      getBlackBerryOSVersion : check( function() {
+        if ( t.isBlackberry10() )
+          return '10';
+
+        if ( ! has( 'blackberry' ) )
+          return false;
+
+        var rv = -1; // Return value assumes failure.
+        var re;
+
+        if ( has( 'webkit' ) ) { // Detecting the BB OS version for devices running OS 6.0 or higher
+          re = /Version\/([\d\.]+)/i;
+        } else {
+          // BlackBerry devices <= 5.XX
+          re = /BlackBerry\w+\/([\d\.]+)/i;
+        }
+        if ( re.exec( t.userAgent ) != null )
+          rv =  RegExp.$1.toString();
+
+        return rv === -1 ? false : rv;
+      } ),
+
+      /**
+       * Detects if the current UA is iPhone Mobile Safari or another iPhone or iPod Touch Browser.
+       */
+      isIPhoneOrIPod : check( function() {
+        return has( 'safari' ) && ( has( 'iphone' ) || has( 'ipod' ) );
+      } ),
+
+      /**
+       * Detects if the current device is an iPad.
+       */
+      isIPad : check( function() {
+        return has( 'ipad' ) && has( 'safari' );
+      } ),
+
+
+      /**
+      *  Detects if the current UA is Chrome for iOS
+      */
+      isChromeForIOS : check( function() {
+        return t.isIPhoneOrIPod() && has( 'crios/' );
+      } ),
+
+      /**
+       * Detects if the current browser is the Native Android browser.
+       */
+      isAndroid : check( function() {
+        if ( has( 'android' ) ) {
+          return ! ( t.isOperaMini() || t.isOperaMobile() || t.isFirefoxMobile() );
+        }
+      } ),
+
+      /**
+       * Detects if the current browser is the Native Android Tablet browser.
+       */
+       isAndroidTablet : check( function() {
+        if ( has( 'android' ) && ! has( 'mobile' ) ) {
+          return ! ( t.isOperaMini() || t.isOperaMobile() || t.isFirefoxMobile() );
+        }
+      } ),
+
+
+      /**
+       * Detects if the current browser is Opera Mobile
+       */
+      isOperaMobile : check( function() {
+        return has( 'opera' ) && has( 'mobi' );
+      } ),
+
+      /**
+       * Detects if the current browser is Opera Mini
+       */
+      isOperaMini : check( function() {
+        return has( 'opera' ) && has( 'mini' );
+      } ),
+
+
+      /**
+       * isBlackberry10() can be used to check the User Agent for a BlackBerry 10 device.
+       */
+      isBlackberry10 : check( function() {
+        return has( 'bb10' ) && has( 'mobile' );
+      } ),
+
+      /**
+       * isBlackberryTablet() can be used to check the User Agent for a RIM blackberry tablet
+       */
+      isBlackberryTablet : check( function() {
+        return has( 'playbook' ) && has( 'rim tablet' );
+      } ),
+
+      /**
+       * Detects if the current browser is a Windows Phone 7 device.
+       */
+      isWindowsPhone7 : check( function () {
+        return has( 'windows phone os 7' );
+      } ),
+
+      /**
+       * Detects if the current browser is a Windows Phone 8 device.
+       */
+      isWindowsPhone8 : check( function () {
+        return has( 'windows phone 8' );
+      } ),
+
+      /**
+       * Detects if the device platform is J2ME.
+       */
+      isJ2MEPlatform : check( function () {
+        return has( 'j2me/midp' ) || ( has( 'midp' ) && has( 'cldc' ) );
+      } ),
+
+
+      /**
+       * Detects if the device platform is the Symbian Series 40.
+       */
+      isSymbianS40Platform : check( function() {
+        if ( has( 'series40' ) ) {
+          return has( 'nokia' ) || has( 'ovibrowser' ) || has( 'nokiabrowser' );
+        }
+      } ),
+
+
+      /**
+       * Detects if the device platform is the Symbian Series 60.
+       */
+      isSymbianPlatform : check( function() {
+        if ( has( 'webkit' ) ) {
+          // First, test for WebKit, then make sure it's either Symbian or S60.
+          return has( 'symbian' ) || has( 'series60' );
+        } else if ( has( 'symbianos' ) && has( 'series60' ) ) {
+          return true;
+        } else if ( has( 'nokia' ) && has( 'series60' ) ) {
+          return true;
+        } else if ( has( 'opera mini' ) ) {
+          return has( 'symbianos' ) || has( 'symbos' ) || has( 'series 60' );
+        }
+      } ),
+
+
+      /**
+       * Detects if the current browser is the Kindle Fire Native browser.
+       */
+      isKindleFire : check( function() {
+        return has( 'silk/' ) && has( 'silk-accelerated=' );
+      } ),
+
+      /**
+       * Detects if the current browser is Firefox Mobile (Fennec)
+       */
+      isFirefoxMobile : check( function() {
+        return has( 'fennec' );
+      } ),
+
+
+      /**
+       * Detects if the current browser is the native FirefoxOS browser
+       */
+      isFirefoxOS : check( function() {
+        return has( 'mozilla' ) && has( 'mobile' ) && has( 'gecko' ) && has( 'firefox' );
+      } ),
+
+
+      /**
+       * Detects if the current UA is Facebook for iPad
+       */
+      isFacebookForIpad : check( function() {
+        if ( ! has( 'ipad' ) )
+          return false;
+
+        return has( 'facebook' ) || has( 'fbforiphone' ) || has( 'fban/fbios;' );
+      } ),
+
+      /**
+       * Detects if the current UA is Facebook for iPhone
+       */
+      isFacebookForIphone : check( function() {
+        if ( ! has( 'iphone' ) )
+          return false;
+
+        return ( has( 'facebook' ) && ! has( 'ipad' ) ) ||
+          ( has( 'fbforiphone' ) && ! has( 'tablet' ) ) ||
+          ( has( 'fban/fbios;' ) && ! has( 'tablet' ) ); // FB app v5.0 or higher
+      } ),
+
+      /**
+       * Detects if the current UA is Twitter for iPhone
+       */
+      isTwitterForIphone : check( function() {
+        if ( has( 'ipad' ) )
+          return false;
+
+        return has( 'twitter for iphone' );
+      } ),
+
+      /**
+       * Detects if the current UA is Twitter for iPad
+       */
+      isTwitterForIpad : check( function() {
+        return has( 'twitter for ipad' ) || ( has( 'ipad' ) && has( 'twitter for iphone' ) );
+      } ),
+
+
+      /**
+       * Detects if the current UA is WordPress for iOS
+       */
+      isWordPressForIos : check( function() {
+        return has( 'wp-iphone' );
+      } )
+  };
+
+  function has( str ) {
+    return t.userAgent.indexOf( str ) != -1;
+  }
+
+  function check( fn ) {
+    return function() {
+      return t.userAgent === false ? false : fn() || false;
+    }
+  }
+
+  g.wpcom_mobile_user_agent_info = t;
+
+} )( typeof window !== 'undefined' ? window : this );
+;
+(()=>{var t={14:(t,e,i)=>{"use strict";i.d(e,{Z:()=>h});var n=i(191),o=i.n(n),r=i(261),s=i.n(r),a=i(160),d=i.n(a),l=new URL(i(240),i.b),c=s()(o()),p=d()(l);c.push([t.id,`.wordads-ad-wrapper {\n    position: absolute;\n    visibility: hidden;\n    font: 11px Arial, sans-serif;\n    letter-spacing: 1px;\n    text-decoration: none;\n    width: 100%;\n    margin: 25px auto;\n    padding: 0;\n    clear: both\n}\n\n.wordads-ad-wrapper--sidebar,\n.wordads-ad-wrapper--gutenberg_skyscraper,\n.wordads-ad-wrapper--gutenberg_mobile_leaderboard {\n    font-size: 8px;\n}\n\n.wordads-ad-title {\n    margin: 0 auto 5px\n}\n\n.wordads-ad-controls {\n    margin: 5px auto 0;\n    text-align: right\n}\n\n.wordads-ad-controls span {\n    cursor: pointer\n}\n\n.wordads-ad {\n    margin: 0 auto;\n    max-width: fit-content;\n}\n\n.wordads-ad-wrapper--belowpost .wordads-ad {\n    width: 300px;\n    max-width: 580px;\n}\n\n.wordads-ad iframe {\n    margin: 0;\n    padding: 0\n}\n\n.wordads-ad.wordads-ad-responsive {\n    width: 100%;\n    max-width: unset\n}\n\n.wordads-ad-sticky-wrapper {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    margin: auto;\n    position: fixed;\n    transition: transform .2s ease-in-out;\n    user-select: none;\n    padding: 5px 0;\n    z-index: 49999\n}\n.wordads-ad-wrapper--bottom_sticky.wordads-ad-sticky-wrapper {\n    right: 0;\n    left: 0;\n    bottom: 0;\n    background: #f1f1f1;\n    transform: translate(0, 0);\n}\n.wordads-ad-wrapper--sidebar_sticky_right.wordads-ad-sticky-wrapper {\n    width: fit-content;\n    min-width: 120px;\n    top: max(calc(var(--wp-admin--admin-bar--height, 0px) + 24px), 10%);\n    right: 20px;\n}\n\n.wordads-ad-wrapper--sidebar_sticky_right .wordads-ad-content {\n    border: 1px solid #f1f1f1;\n}\n\n.wordads-ad-sticky-close-btn {\n    width: 28px;\n    height: 28px;\n    position: absolute;\n    box-sizing: content-box;\n    cursor: pointer;\n    overflow: hidden;\n    background-size: 28px;\n    background-repeat: no-repeat;\n    background-position: center;\n    background-image: url(${p})\n}\n\n.wordads-ad-wrapper--bottom_sticky .wordads-ad-sticky-close-btn {\n    top: -14px;\n    left: .75rem;\n}\n\n.wordads-ad-wrapper--sidebar_sticky_right .wordads-ad-sticky-close-btn {\n    top: -14px;\n    right: 0;\n}\n\n.wordads-ad-sticky {\n    width: auto;\n    max-width: initial;\n    max-height: inherit;\n}\n\n.wordads-ad-sticky .wordads-ad-title,\n.wordads-ad-sticky .wordads-ad-controls {\n    color: #333\n}\n\n.wordads-ad-hidden {\n    visibility: hidden;\n}\n\n.wordads-ad-wrapper--bottom_sticky.wordads-ad-hidden {\n    transform: translate(0, 1000px);\n}`,""]);const h=c},261:t=>{"use strict";t.exports=function(t){var e=[];return e.toString=function(){return this.map((function(e){var i="",n=void 0!==e[5];return e[4]&&(i+="@supports (".concat(e[4],") {")),e[2]&&(i+="@media ".concat(e[2]," {")),n&&(i+="@layer".concat(e[5].length>0?" ".concat(e[5]):""," {")),i+=t(e),n&&(i+="}"),e[2]&&(i+="}"),e[4]&&(i+="}"),i})).join("")},e.i=function(t,i,n,o,r){"string"==typeof t&&(t=[[null,t,void 0]]);var s={};if(n)for(var a=0;a<this.length;a++){var d=this[a][0];null!=d&&(s[d]=!0)}for(var l=0;l<t.length;l++){var c=[].concat(t[l]);n&&s[c[0]]||(void 0!==r&&(void 0===c[5]||(c[1]="@layer".concat(c[5].length>0?" ".concat(c[5]):""," {").concat(c[1],"}")),c[5]=r),i&&(c[2]?(c[1]="@media ".concat(c[2]," {").concat(c[1],"}"),c[2]=i):c[2]=i),o&&(c[4]?(c[1]="@supports (".concat(c[4],") {").concat(c[1],"}"),c[4]=o):c[4]="".concat(o)),e.push(c))}},e}},160:t=>{"use strict";t.exports=function(t,e){return e||(e={}),t?(t=String(t.__esModule?t.default:t),/^['"].*['"]$/.test(t)&&(t=t.slice(1,-1)),e.hash&&(t+=e.hash),/["'() \t\n]|(%20)/.test(t)||e.needQuotes?'"'.concat(t.replace(/"/g,'\\"').replace(/\n/g,"\\n"),'"'):t):t}},191:t=>{"use strict";t.exports=function(t){return t[1]}},546:function(t){t.exports=function(){"use strict";function t(t){for(var e=1;e<arguments.length;e++){var i=arguments[e];for(var n in i)t[n]=i[n]}return t}return function e(i,n){function o(e,o,r){if("undefined"!=typeof document){"number"==typeof(r=t({},n,r)).expires&&(r.expires=new Date(Date.now()+864e5*r.expires)),r.expires&&(r.expires=r.expires.toUTCString()),e=encodeURIComponent(e).replace(/%(2[346B]|5E|60|7C)/g,decodeURIComponent).replace(/[()]/g,escape);var s="";for(var a in r)r[a]&&(s+="; "+a,!0!==r[a]&&(s+="="+r[a].split(";")[0]));return document.cookie=e+"="+i.write(o,e)+s}}return Object.create({set:o,get:function(t){if("undefined"!=typeof document&&(!arguments.length||t)){for(var e=document.cookie?document.cookie.split("; "):[],n={},o=0;o<e.length;o++){var r=e[o].split("="),s=r.slice(1).join("=");try{var a=decodeURIComponent(r[0]);if(n[a]=i.read(s,a),t===a)break}catch(t){}}return t?n[t]:n}},remove:function(e,i){o(e,"",t({},i,{expires:-1}))},withAttributes:function(i){return e(this.converter,t({},this.attributes,i))},withConverter:function(i){return e(t({},this.converter,i),this.attributes)}},{attributes:{value:Object.freeze(n)},converter:{value:Object.freeze(i)}})}({read:function(t){return'"'===t[0]&&(t=t.slice(1,-1)),t.replace(/(%[\dA-F]{2})+/gi,decodeURIComponent)},write:function(t){return encodeURIComponent(t).replace(/%(2[346BF]|3[AC-F]|40|5[BDE]|60|7[BCD])/g,decodeURIComponent)}},{path:"/"})}()},462:(t,e,i)=>{"use strict";i.r(e),i.d(e,{default:()=>w});var n=i(157),o=i.n(n),r=i(869),s=i.n(r),a=i(318),d=i.n(a),l=i(825),c=i.n(l),p=i(597),h=i.n(p),g=i(770),u=i.n(g),f=i(14),m={};m.styleTagTransform=u(),m.setAttributes=c(),m.insert=d().bind(null,"head"),m.domAPI=s(),m.insertStyleElement=h(),o()(f.Z,m);const w=f.Z&&f.Z.locals?f.Z.locals:void 0},157:t=>{"use strict";var e=[];function i(t){for(var i=-1,n=0;n<e.length;n++)if(e[n].identifier===t){i=n;break}return i}function n(t,n){for(var r={},s=[],a=0;a<t.length;a++){var d=t[a],l=n.base?d[0]+n.base:d[0],c=r[l]||0,p="".concat(l," ").concat(c);r[l]=c+1;var h=i(p),g={css:d[1],media:d[2],sourceMap:d[3],supports:d[4],layer:d[5]};if(-1!==h)e[h].references++,e[h].updater(g);else{var u=o(g,n);n.byIndex=a,e.splice(a,0,{identifier:p,updater:u,references:1})}s.push(p)}return s}function o(t,e){var i=e.domAPI(e);return i.update(t),function(e){if(e){if(e.css===t.css&&e.media===t.media&&e.sourceMap===t.sourceMap&&e.supports===t.supports&&e.layer===t.layer)return;i.update(t=e)}else i.remove()}}t.exports=function(t,o){var r=n(t=t||[],o=o||{});return function(t){t=t||[];for(var s=0;s<r.length;s++){var a=i(r[s]);e[a].references--}for(var d=n(t,o),l=0;l<r.length;l++){var c=i(r[l]);0===e[c].references&&(e[c].updater(),e.splice(c,1))}r=d}}},318:t=>{"use strict";var e={};t.exports=function(t,i){var n=function(t){if(void 0===e[t]){var i=document.querySelector(t);if(window.HTMLIFrameElement&&i instanceof window.HTMLIFrameElement)try{i=i.contentDocument.head}catch(t){i=null}e[t]=i}return e[t]}(t);if(!n)throw new Error("Couldn't find a style target. This probably means that the value for the 'insert' parameter is invalid.");n.appendChild(i)}},597:t=>{"use strict";t.exports=function(t){var e=document.createElement("style");return t.setAttributes(e,t.attributes),t.insert(e,t.options),e}},825:(t,e,i)=>{"use strict";t.exports=function(t){var e=i.nc;e&&t.setAttribute("nonce",e)}},869:t=>{"use strict";t.exports=function(t){if("undefined"==typeof document)return{update:function(){},remove:function(){}};var e=t.insertStyleElement(t);return{update:function(i){!function(t,e,i){var n="";i.supports&&(n+="@supports (".concat(i.supports,") {")),i.media&&(n+="@media ".concat(i.media," {"));var o=void 0!==i.layer;o&&(n+="@layer".concat(i.layer.length>0?" ".concat(i.layer):""," {")),n+=i.css,o&&(n+="}"),i.media&&(n+="}"),i.supports&&(n+="}");var r=i.sourceMap;r&&"undefined"!=typeof btoa&&(n+="\n/*# sourceMappingURL=data:application/json;base64,".concat(btoa(unescape(encodeURIComponent(JSON.stringify(r))))," */")),e.styleTagTransform(n,t,e.options)}(e,t,i)},remove:function(){!function(t){if(null===t.parentNode)return!1;t.parentNode.removeChild(t)}(e)}}}},770:t=>{"use strict";t.exports=function(t,e){if(e.styleSheet)e.styleSheet.cssText=t;else{for(;e.firstChild;)e.removeChild(e.firstChild);e.appendChild(document.createTextNode(t))}}},501:(t,e,i)=>{"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.getSortedSlotSizes=e.getFilteredSlotSizesByWidthAndHeight=e.getFilteredSlotSizesByWidth=void 0;const n=i(639);e.getFilteredSlotSizesByWidth=(t,e)=>(r[t]||[]).filter((([t])=>t<=e)),e.getFilteredSlotSizesByWidthAndHeight=(t,e,i)=>(r[t]||[]).filter((([t,n])=>t<=e&&n<=i));const o=document.documentElement.clientWidth<800,r=Object.freeze({[n.SlotType.TOP]:o?[[320,50]]:[[970,250],[970,90],[728,90]],[n.SlotType.INLINE]:o?[[300,250],[320,50]]:[[970,250],[728,90],[300,250]],[n.SlotType.BELOW_POST]:o?[[300,250]]:[[300,250],[728,90]],[n.SlotType.BOTTOM_STICKY]:o?[[320,50]]:[[728,90],[970,90]],[n.SlotType.SIDEBAR]:o?[]:[[120,600],[160,600],[300,600]],[n.SlotType.SIDEBAR_STICKY_RIGHT]:o?[]:[[120,600],[160,600],[300,250],[300,600]],[n.SlotType.GUTENBERG_RECTANGLE]:[[300,250]],[n.SlotType.GUTENBERG_LEADERBOARD]:[[728,90]],[n.SlotType.GUTENBERG_MOBILE_LEADERBOARD]:[[320,50]],[n.SlotType.GUTENBERG_SKYSCRAPER]:[[160,600]],[n.SlotType.SIDEBAR_WIDGET_MEDIUMRECTANGLE]:[[300,250]],[n.SlotType.SIDEBAR_WIDGET_LEADERBOARD]:[[728,90]],[n.SlotType.SIDEBAR_WIDGET_WIDESKYSCRAPER]:[[160,600]],[n.SlotType.SHORTCODE]:[[300,250]]});e.getSortedSlotSizes=t=>r[t].sort(((t,e)=>{const i=e[0]-t[0];return 0!==i?i:e[1]-t[1]}))},342:function(t,e,i){"use strict";var n=this&&this.__importDefault||function(t){return t&&t.__esModule?t:{default:t}};Object.defineProperty(e,"__esModule",{value:!0});const o=n(i(546)),r=i(501),s=i(639),a=i(313);i(462);const d=new class{constructor(){this.tcData=null,this.usPrivacy=null,this.logging="function"==typeof URLSearchParams&&"true"===new URLSearchParams(window.location.search).get("wordads-logging"),this.slots=[],this.initialized=!1,this.uid=null,this.config={},this.scroll={lastDirection:a.ScrollDirection.DOWN,lastY:window.scrollY}}log(t){this.logging&&console.log(t)}logSlot(t,e){if(!this.logging)return;const i=t.sizes.map((([t,e])=>t+"x"+e)).join(","),n=[t.type,t.tagId,i].join("|");this.log(`[${n}] ${e}`)}trackStat(t){window._stq=window._stq||[],window._stq.push(["extra",{x_wordads_smart:t}])}recordTracksEvent(t,e){e=e||{},window._tkq=window._tkq||[],window._tkq.push(["recordEvent",t,e])}createAdSnippet(t){let e=document.createElement("div"),i=document.createElement("div"),n=document.createElement("div"),o=document.createElement("div");return e.classList.add("wordads-ad"),i.classList.add("wordads-ad-title"),n.classList.add("wordads-ad-content"),o.classList.add("wordads-ad-controls"),i.innerText=this.config._.title,n.id=t,o.innerHTML=this.tcData?`<span onclick="__tcfapi( 'showUi' )">${this.config._.privacy_settings}</span>`:"",e.appendChild(i),e.appendChild(n),e.appendChild(o),e}createBottomStickyAdSnippet(t){const e=this.createAdSnippet(t);e.classList.add("wordads-ad-sticky");const i=this.wrapSnippet(e,s.SlotType.BOTTOM_STICKY);i.classList.add("wordads-ad-sticky-wrapper");const n=()=>{this.toggleVisibility(i,a.ScrollDirection.DOWN)},o=document.createElement("div");return o.classList.add("wordads-ad-sticky-close-btn"),o.onclick=function(){i.remove(),document.removeEventListener("scroll",n)},i.insertBefore(o,e),{event:n,snippet:i}}createSidebarStickyAdSnippet(t,e){const i=this.createAdSnippet(t);i.classList.add("wordads-ad-sticky");const n=this.wrapSnippet(i,e);n.classList.add("wordads-ad-sticky-wrapper");const o=this.throttle((()=>{this.updateSidebarStickyVisibility(n)}),150),r=document.createElement("div");return r.classList.add("wordads-ad-sticky-close-btn"),r.onclick=function(){n.remove(),window.removeEventListener("resize",o),document.removeEventListener("scroll",o)},n.insertBefore(r,i),{event:o,snippet:n}}toggleVisibility(t,e){const i=window.scrollY>this.scroll.lastY?a.ScrollDirection.DOWN:a.ScrollDirection.UP,n=this.scroll.lastDirection===i;if(this.scroll.lastDirection=i,this.scroll.lastY=window.scrollY,n)return;const o="wordads-ad-hidden";e===i?t.classList.remove(o):t.classList.add(o)}wrapSnippet(t,e){const i=document.createElement("div");return i.classList.add("wordads-ad-wrapper"),i.classList.add(`wordads-ad-wrapper--${e}`),i.appendChild(t),i}insertAdBefore(t,e,i,n){const o=this.getRandomTagId(),r=this.createAdSnippet(o),s=this.wrapSnippet(r,i);t.insertAdjacentElement("beforebegin",s),this.slots.push({tagId:o,formatId:e,type:i,sizes:n,element:s,isLazy:!0})}call(t){var e;(null===(e=this.config[t.type])||void 0===e?void 0:e.adflow_enabled)?this.callAdFlow(t):this.callSmart(t)}callSmart(t){let e=this;window.sas.cmd.push((function(){e.logSlot(t,"calling Smart"),window.sas.call("std",{siteId:e.config.site_id,pageId:e.config.page_id,formatId:t.formatId,tagId:t.tagId,content_source_id:e.config.blog_id,target:e.getTarget(t.sizes)})}))}callAdFlow(t){this.logSlot(t,"calling AdFlow");let e=new XMLHttpRequest,i=this;e.onreadystatechange=function(){if(XMLHttpRequest.DONE===e.readyState){if(performance.mark(`${t.tagId}-end`),200!==e.status)return void window.sas.events.fire("noad",{tagId:t.tagId,formatId:t.formatId,isSafe:!1},t.tagId);let n=JSON.parse(e.response)[t.tagId],o=n&&!n.hasOwnProperty("ScriptNoAd");if(o){let t=document.createElement("script");t.type=n.ContentType,t.innerHTML=n.Content,document.body.appendChild(t)}else{if(n&&n.hasOwnProperty("ScriptNoAd")){let t=new XMLHttpRequest;t.open("GET",n.ScriptNoAd),t.send()}window.sas.events.fire("noad",{tagId:t.tagId,formatId:t.formatId,isSafe:n.IsSafe},t.tagId)}i.trackAdFlowRequestLatency(o,t.tagId,t.type)}};let n={timestamp:Date.now(),networkId:this.config.network_id,siteId:this.config.site_id,pageId:this.config.page_id,content_source_id:this.config.blog_id,wp_post_id:this.config.post_id,getAdContent:!0,ads:[{formatId:t.formatId,tagId:t.tagId,target:this.getTarget(t.sizes),isLazy:!1}],gdpr:!1,pageUrl:window.location.href,uid:this.getOrCreateUID()};this.usPrivacy&&(n.us_privacy=this.usPrivacy),this.tcData&&(n.gdpr=!0,n.gdpr_consent=this.tcData.tcString),e.open("POST","https://af.pubmine.com"),e.setRequestHeader("Accept","application/json"),e.withCredentials=!0,performance.mark(`${t.tagId}-start`),e.send(JSON.stringify(n))}getTarget(t){if(!t.length)return this.config.target;const e=this.config.target.split(";");let i=0,n=0;return t.forEach((([t,e])=>{t>i&&(i=t),e>n&&(n=e)})),i&&e.push(`max_width=${i}`),n&&e.push(`max_height=${n}`),e.join(";")}trackAdFlowRequestLatency(t,e,i){let n=performance.measure(`${e}-duration`,`${e}-start`,`${e}-end`),o={has_ad:t,ad_type:i,request_time:Math.round(n.duration),theme:this.config.theme};navigator.connection&&(o.connection_effective_type=navigator.connection.effectiveType,o.connection_downlink=navigator.connection.downlink),this.recordTracksEvent("wpcom_wordads_adflow",o)}getOrCreateUID(){if(null!==this.uid)return this.uid;if(!this.hasUserConsent())return this.uid="",this.uid;const t="wordads_uid",e=o.default.get(t);if(e)return this.log(`Reused UID value ${e}`),this.uid=e,this.uid;const i=this.getCookiesSharedDomain(t,window.location.hostname);return window.localStorage&&!i||(this.uid=this.createUIDFromCookies(t,30,i)),this.uid=this.uid||this.getOrCreateUIDFromLocalStorage(t,30),this.log(`UID value: ${this.uid}`),this.uid}hasUserConsent(){return!this.tcData||!0===this.tcData.vendor.consents[496]&&!0===this.tcData.purpose.consents[1]}getCookiesSharedDomain(t,e){const i=e.split(".");if(i.length<=2)return null;let n=null,r=0;for(const s of i){if(r+=s.length,n=e.substring(r),r>=e.length)return null;const i=o.default.withAttributes({domain:n});if(i.set(t,"1")&&i.get(t))return i.remove(t),n;r++}return null}createUIDFromCookies(t,e,i){const n={expires:e,domain:i||window.location.hostname};this.log(`Created UID from Cookies on ${n.domain}`);const r=o.default.withAttributes(n),s=this.generateUIDValue();return r.set(t,s),s}getOrCreateUIDFromLocalStorage(t,e){this.log("UID from localStorage");const i=(localStorage.getItem(t)||"").split(":");let n=i[0];const o=(new Date).getTime();let r=parseInt(i[1]);return(!n||o>r)&&(n=this.generateUIDValue(),r=o+24*e*60*60*1e3,localStorage.setItem(t,n+":"+r)),n}generateUIDValue(){return Math.random().toString(36).substring(2,10)+(new Date).getTime().toString()}insertFallbackAd(t,e){let i=(window.sas_fallback||[]).filter((function(t){return t.type===e}));if(0===i.length)return t.remove(),void this.log(`No fallback found for ${e}, snippet removed`);let n=i[0].tag.replaceAll("{{unique_id}}",Math.trunc(1e6*Math.random())),o=document.createElement("div");o.innerHTML=n,n=o.childNodes[0].nodeValue;let r=document.createElement("div");r.innerHTML=n,t.style.position="relative",t.style.visibility="visible",t.innerHTML=r.innerHTML,r.querySelectorAll("script").forEach((function(t){t.parentNode&&t.parentNode.removeChild(t);let e=document.createElement("script");t.src?e.src=t.src:t.textContent?e.textContent=t.textContent:t.innerText&&(e.innerText=t.innerText),document.body.appendChild(e)})),this.trackStat("fallback_"+e)}getChildrenByTag(t,e){let i=[];for(let n=0;n<t.children.length;n++){let o=t.children[n];o.nodeName===e.toUpperCase()&&i.push(o)}return i}getFloatingElements(t){let e=[],i=t.getElementsByTagName("*");for(let t=0;t<i.length;t++){let n=i[t],o=getComputedStyle(n),r=o.getPropertyValue("position"),s=o.getPropertyValue("float");"relative"!==r&&"absolute"!==r&&"none"===s||e.push(n)}return e}getElementGlobalPosition(t){let e=t.getBoundingClientRect();return{top:e.top+window.scrollY,left:e.left+window.scrollX,bottom:e.top+window.scrollY+e.height,right:e.left+window.scrollX+e.width}}collidesWithElements(t,e){let i=this.getElementGlobalPosition(t),n=!1;return e.forEach((t=>{let e=this.getElementGlobalPosition(t);i.bottom<e.top||i.top>e.bottom||i.right<e.left||i.left>e.left||(n=!0)})),n}initInlineAds(){var t;if(!(null===(t=this.config.inline)||void 0===t?void 0:t.enabled))return;this.log(`Initializing ${s.SlotType.INLINE}`);let e=document.getElementById("wordads-inline-marker");if(!e)return void this.trackStat("inline_no_marker");let i=e.parentElement;if(!i)return;const n=this.getAvailableWidth(i),o=(0,r.getFilteredSlotSizesByWidth)(s.SlotType.INLINE,n);e.remove();let a=this.config.inline.max_slots,d=this.config.inline.max_blaze_slots,l=0,c=window.innerHeight,p=Math.ceil(1.35*c),h=Math.ceil(2.5*c),g=i.getBoundingClientRect().top+window.scrollY+p,u=this.getChildrenByTag(i,"p"),f=this.getFloatingElements(i);u.forEach((t=>{var e;let i=t.getBoundingClientRect().top+window.scrollY,n=t.previousElementSibling;if(i>g&&l<a&&n&&"P"===n.nodeName&&!this.collidesWithElements(t,f)){if(d>l){if(!(null===(e=this.config.inline)||void 0===e?void 0:e.format_id))return;this.insertAdBefore(t,this.config.inline.format_id,s.SlotType.INLINE,o),this.trackStat("render_inline")}else{let e=document.createElement("div");e.className="wordads-ad-wrapper",t.insertAdjacentElement("beforebegin",e),this.insertFallbackAd(e,s.SlotType.INLINE),this.trackStat("render_inline_fallback")}g=i+h,l++}})),0===l&&this.trackStat("inline_no_insert")}initBottomSticky(){var t;if(!(null===(t=this.config.bottom_sticky)||void 0===t?void 0:t.enabled))return;this.log(`Initializing ${s.SlotType.BOTTOM_STICKY}`);const e=this.getRandomTagId(),{event:i,snippet:n}=this.createBottomStickyAdSnippet(e);document.body.append(n);const o=document.documentElement.clientWidth,a=(0,r.getFilteredSlotSizesByWidth)(s.SlotType.BOTTOM_STICKY,o);this.slots.push({formatId:this.config.bottom_sticky.format_id,tagId:e,type:s.SlotType.BOTTOM_STICKY,sizes:a,element:n,isLazy:!1,onAd:function(){document.addEventListener("scroll",i,{passive:!0})}})}initSidebarStickyRight(){var t;if(!(null===(t=this.config.sidebar_sticky_right)||void 0===t?void 0:t.enabled))return;this.log(`Initializing ${s.SlotType.SIDEBAR_STICKY_RIGHT}`);const e=this.getRandomTagId(),{event:i,snippet:n}=this.createSidebarStickyAdSnippet(e,s.SlotType.SIDEBAR_STICKY_RIGHT);document.body.append(n);const{maxWidth:o,maxHeight:a}=this.getMaxAvailableSidebarStickySize(n),d=(0,r.getFilteredSlotSizesByWidthAndHeight)(s.SlotType.SIDEBAR_STICKY_RIGHT,o,a);d.length&&this.slots.push({formatId:this.config.sidebar_sticky_right.format_id,tagId:e,type:s.SlotType.SIDEBAR_STICKY_RIGHT,sizes:d,element:n,isLazy:!1,onAd:()=>{this.updateSidebarStickyVisibility(n),window.addEventListener("resize",i,{passive:!0}),document.addEventListener("scroll",i,{passive:!0})}})}initTop(){var t;if(!(null===(t=this.config.top)||void 0===t?void 0:t.enabled))return;this.log(`Initializing ${s.SlotType.TOP}`);const e=Array.from(document.getElementsByClassName("wordads-tag"));let[i]=e.filter((t=>t.dataset.slotType===s.SlotType.TOP));if(!i)return void this.log(`${s.SlotType.TOP} tag not found`);if(i.style.display="",screen.availHeight>=i.getBoundingClientRect().y)return;this.log(`${s.SlotType.TOP} tag relocated to the top`);const n=document.getElementById("wpcom-gifting-banner");n?n.insertAdjacentElement("afterend",i):document.body.prepend(i)}updateSidebarStickyVisibility(t){const e=t.offsetHeight;this.isWithinViewportHeight(e)&&!this.checkIfAdIsOverlappingContent(t)?(this.log("sidebar_sticky_right: ad slot can fit"),t.style.visibility="visible"):(this.log("sidebar_sticky_right: ad slot CANNOT fit"),t.style.visibility="hidden")}isWithinViewportHeight(t){return t<=.8*window.innerHeight}isElemOverlappingAtPoint(t,e,i){return document.elementsFromPoint(t,e).filter((t=>{return!((e=t)===document.body||e===document.documentElement||i.contains(e));var e})).length>0}checkIfAdIsOverlappingContent(t){const e=t.getBoundingClientRect();return this.isElemOverlappingAtPoint(e.left,e.top,t)||this.isElemOverlappingAtPoint(e.left,e.bottom,t)}getMaxAvailableSidebarStickySize(t){const e=(0,r.getSortedSlotSizes)(s.SlotType.SIDEBAR_STICKY_RIGHT);for(const[i,n]of e){t.style.width=`${i}px`,t.style.height=`${n}px`;const e=this.checkIfAdIsOverlappingContent(t);if(t.style.width="",t.style.height="",!e&&this.isWithinViewportHeight(n))return this.log(`sidebar_sticky_right: max available size without overlap, [${i}, ${n}]`),{maxWidth:i,maxHeight:n}}return this.log("sidebar_sticky_right: no slot size fits available space"),{maxWidth:0,maxHeight:0}}initAdTags(){var t,e,i;this.log("Initializing ad tags");const n=Array.from(document.getElementsByClassName("wordads-tag"));for(let o=0;o<n.length;o++){const s=n[o],a=null!==(t=s.dataset.slotType)&&void 0!==t?t:"",d=null===(e=this.config[a])||void 0===e?void 0:e.format_id,l=this.getAvailableWidth(s.parentElement),c=(0,r.getFilteredSlotSizesByWidth)(a,l);this.log(`Initializing ad tag ${o+1}: ${a}, format id: ${d}`),(null===(i=this.config[a])||void 0===i?void 0:i.enabled)?d?c.length?(this.insertAdBefore(s,d,a,c),s.remove()):(this.log(`No available sizes for slot type: ${a}`),s.remove()):(this.log(`Invalid slot type: ${a}`),s.remove()):(this.log(`Disabled slot type: ${a}`),s.remove())}}getAvailableWidth(t){if(!t)return 0;const e=window.getComputedStyle(t),i=parseFloat(e.paddingLeft),n=parseFloat(e.paddingRight);return t.getBoundingClientRect().width-(i+n)}handleNoAd(t){var e;let i=this.getSlotByTagId(t.tagId);i?(this.logSlot(i,"got NoAd"),(null===(e=this.config[i.type])||void 0===e?void 0:e.adflow_enabled)&&t.hasOwnProperty("isSafe")&&(t.isSafe?(this.logSlot(i,"requesting fallback"),this.insertFallbackAd(i.element,i.type)):l.abort()),this.trackStat("noad_"+i.type)):this.log(`NoAd: no slot found for tag id: ${t.tagId}, format id: ${t.formatId}`)}handleAd(t){let e=this.getSlotByTagId(t.tagId);e?(this.logSlot(e,"got Ad"),s.StickySlotTypes.indexOf(e.type)>-1?e.element.style.position="fixed":e.element.style.position="relative",e.element.style.visibility="visible",e.onAd&&e.onAd(),this.trackStat("ad_"+e.type)):this.log(`Ad: no slot found for tag id: ${t.tagId}, format id: ${t.formatId}`)}handlePostMessage(t){if("object"!=typeof t.data)return;if("wa-inline-frame"!==t.data.type)return;const e=t;let i=document.getElementsByTagName("iframe");for(let t=0;t<i.length;t++)if(i[t].contentWindow===e.source){i[t].style.height=Math.ceil(e.data.height)+"px";let n=i[t].closest(".wordads-ad");n&&(n.classList.contains("wordads-ad-responsive")||n.classList.add("wordads-ad-responsive"),e.data.maxWidth&&n.querySelectorAll(".wordads-ad-title, .wordads-ad-controls").forEach((t=>{t.style.maxWidth=e.data.maxWidth})));break}}getSlotByTagId(t){return this.slots.find((e=>e.tagId===t))}getRandomTagId(){return"wordads-ad-"+Math.trunc(1e6*Math.random())}initConsent(){this.log("Initializing consent...");let t=this;window.__uspapi?(this.log("Querying USP API..."),window.__uspapi("getUSPData",1,(function(e,i){i&&e.uspString&&(t.usPrivacy=e.uspString,t.log("USP API data found. Setting consent: "+t.usPrivacy))}))):this.log("USP API not found"),window.__tcfapi?(this.log("Querying TCF API..."),window.__tcfapi("addEventListener",2,(function(e,i){var n;i&&e.gdprApplies?(t.tcData=e,t.log("TCF API data found. Setting consent: "+(null===(n=t.tcData)||void 0===n?void 0:n.tcString)),t.initCookieSync()):t.log("TCF API data found. GDPR does not apply")}))):this.log("TCF API not found")}initSmart(){this.log("Initializing Smart");let t=this;window.sas.cmd.push((function(){window.sas.setup({networkid:t.config.network_id,domain:"https://www15.smartadserver.com",async:!0})})),window.sas.cmd.push((function(){window.sas.events.on("noad",(e=>{t.handleNoAd(e)}))})),window.sas.cmd.push((function(){window.sas.events.on("ad",(e=>{t.handleAd(e)}))}))}initCookieSync(){this.log("Initializing Cookie Sync");let t=`https://sync.smartadserver.com/getuid?nwid=${this.config.network_id}&url=https://af.pubmine.com/user-sync?pid=[sas_uid]`;this.tcData&&(t+=`&gdpr=1&gdpr_consent=${this.tcData.tcString}`),document.createElement("img").src=t}throttle(t,e){let i=!1;return(...n)=>{i||(t(...n),i=!0,setTimeout((()=>{i=!1}),e))}}isElementInLazyViewport(t){let e=window.innerHeight,i=window.scrollY,n=i-e,o=i+2*e,r=this.getElementGlobalPosition(t);return!(r.bottom<=n||r.top>=o)}processAds(){0!==this.slots.length&&this.slots.forEach((t=>{t.isLoaded||(!t.isLazy||this.isElementInLazyViewport(t.element))&&(this.logSlot(t,"in view"),t.isLoaded=!0,this.call(t))}))}preInit(){this.log("Running Pre Init");let t=this;if(void 0===window.sas){this.log("Fetching Smart script"),window.sas={cmd:[]};let e=document.createElement("script");e.src="https://ced.sascdn.com/tag/3905/smart.js",e.addEventListener("load",(function(){t.log("Smart JS loaded"),"loading"!==document.readyState?t.init():document.addEventListener("DOMContentLoaded",(()=>{t.init()}))})),document.head.appendChild(e)}}init(){this.log("Init..."),this.mergeConfig(),this.initConsent(),this.initSmart(),this.initCookieSync(),this.initAds()}initAds(){this.initialized||(this.initialized=!0,this.initInlineAds(),this.initTop(),this.initBottomSticky(),this.initSidebarStickyRight(),this.initAdTags(),this.processAds())}deepMerge(t,e){for(let i in e)e.hasOwnProperty(i)&&(e[i]instanceof Object&&t[i]instanceof Object?t[i]=this.deepMerge(t[i],e[i]):t[i]=e[i]);return t}mergeConfig(){let t={},e=document.getElementById("adflow-configuration");e&&(t=JSON.parse(e.innerText)),this.config=this.deepMerge(t,window.wa_smart),this.log("Merged config:"),this.log(this.config)}};d.preInit();const l=new AbortController,{signal:c}=l;c.onabort=()=>d.log("Event listeners removed"),document.addEventListener("scroll",d.throttle((()=>{d.processAds()}),250),{signal:c}),document.addEventListener("resize",d.throttle((()=>{d.processAds()}),250),{signal:c}),window.addEventListener("message",(t=>{d.handlePostMessage(t)}),{signal:c})},313:(t,e)=>{"use strict";var i;Object.defineProperty(e,"__esModule",{value:!0}),e.ScrollDirection=void 0,function(t){t.UP="up",t.DOWN="down"}(i||(e.ScrollDirection=i={}))},639:(t,e)=>{"use strict";var i;Object.defineProperty(e,"__esModule",{value:!0}),e.StickySlotTypes=e.SlotType=void 0,function(t){t.TOP="top",t.INLINE="inline",t.BELOW_POST="belowpost",t.BOTTOM_STICKY="bottom_sticky",t.SIDEBAR="sidebar",t.SIDEBAR_STICKY_RIGHT="sidebar_sticky_right",t.GUTENBERG_RECTANGLE="gutenberg_rectangle",t.GUTENBERG_LEADERBOARD="gutenberg_leaderboard",t.GUTENBERG_MOBILE_LEADERBOARD="gutenberg_mobile_leaderboard",t.GUTENBERG_SKYSCRAPER="gutenberg_skyscraper",t.SIDEBAR_WIDGET_MEDIUMRECTANGLE="sidebar_widget_mediumrectangle",t.SIDEBAR_WIDGET_LEADERBOARD="sidebar_widget_leaderboard",t.SIDEBAR_WIDGET_WIDESKYSCRAPER="sidebar_widget_wideskyscraper",t.SHORTCODE="shortcode"}(i||(e.SlotType=i={})),e.StickySlotTypes=[i.BOTTOM_STICKY,i.SIDEBAR_STICKY_RIGHT]},240:t=>{"use strict";t.exports="data:image/svg+xml,%3Csvg width=%2730%27 height=%2730%27 viewBox=%270 0 30 30%27 fill=%27none%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Crect x=%270.5%27 y=%270.5%27 width=%2729%27 height=%2729%27 rx=%2714.5%27 fill=%27white%27/%3E%3Crect x=%270.5%27 y=%270.5%27 width=%2729%27 height=%2729%27 rx=%2714.5%27 stroke=%27%23DDDDDF%27/%3E%3Cpath d=%27M19 11L15 15L19 19%27 stroke=%27%237C7F83%27 stroke-width=%271.5%27/%3E%3Cpath d=%27M11 19L15 15L11 11%27 stroke=%27%237C7F83%27 stroke-width=%271.5%27/%3E%3C/svg%3E"}},e={};function i(n){var o=e[n];if(void 0!==o)return o.exports;var r=e[n]={id:n,exports:{}};return t[n].call(r.exports,r,r.exports,i),r.exports}i.m=t,i.n=t=>{var e=t&&t.__esModule?()=>t.default:()=>t;return i.d(e,{a:e}),e},i.d=(t,e)=>{for(var n in e)i.o(e,n)&&!i.o(t,n)&&Object.defineProperty(t,n,{enumerable:!0,get:e[n]})},i.o=(t,e)=>Object.prototype.hasOwnProperty.call(t,e),i.r=t=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},i.b=document.baseURI||self.location.href,i.nc=void 0,i(342)})();;
+( function() {
+	var cookieValue = document.cookie.replace( /(?:(?:^|.*;\s*)eucookielaw\s*\=\s*([^;]*).*$)|^.*$/, '$1' );
+	var overlay = document.querySelector( '#eu-cookie-law' );
+	var container = document.querySelector( '.widget_eu_cookie_law_widget' );
+	var initialScrollPosition, scrollFunction;
+
+	function remove( el ) {
+		return el && el.parentElement && el.parentElement.removeChild( el );
+	}
+
+	function triggerDismissEvent() {
+		try {
+			const dismissEvent = new Event( 'eucookielaw-dismissed' );
+			document.dispatchEvent( dismissEvent );
+		} catch ( err ) { }
+	}
+
+	function removeOverlay() {
+		remove( overlay );
+		triggerDismissEvent();
+	}
+
+	function fade( el, type, fn ) {
+		var duration = 400;
+
+		el.style.display = 'block';
+		el.style.transitionProperty = 'opacity';
+		el.style.transitionDuration = duration + 'ms';
+		el.style.opacity = type === 'in' ? 0 : 1;
+
+		// Double rAF to ensure styles are applied cross-browser.
+		requestAnimationFrame( function () {
+			requestAnimationFrame( function() {
+				el.style.opacity = type === 'in' ? 1 : 0;
+				// Wait for animation.
+				setTimeout( function () {
+					// Clean up.
+					el.style.removeProperty( 'opacity' );
+					el.style.removeProperty( 'transition-property' );
+					el.style.removeProperty( 'transition-duration' );
+
+					if ( type === 'out' ) {
+						el.style.display = 'none';
+					}
+
+					if ( typeof fn === 'function' ) {
+						fn();
+					}
+				}, duration + 50 );
+			} );
+		} );
+	}
+
+	function appendWidget() {
+		document.body.appendChild( container );
+		overlay.style.display = 'block';
+		fade( container, 'in' );
+	}
+
+	if ( typeof wp !== 'undefined' && !! wp.customize ) {
+		appendWidget();
+		return;
+	}
+
+	if ( ! overlay || ! container ) {
+		return;
+	}
+
+	if ( overlay.classList.contains( 'ads-active' ) ) {
+		var adsCookieValue = document.cookie.replace( /(?:(?:^|.*;\s*)personalized-ads-consent\s*\=\s*([^;]*).*$)|^.*$/, '$1' );
+		if ( cookieValue !== '' && adsCookieValue !== '' ) {
+			removeOverlay();
+		}
+	} else if ( cookieValue !== '' ) {
+		removeOverlay();
+	}
+
+	appendWidget();
+
+	overlay.querySelector( 'form' ).addEventListener( 'submit', accept );
+
+	if ( overlay.classList.contains( 'hide-on-scroll' ) ) {
+		initialScrollPosition = window.pageYOffset;
+
+		scrollFunction = function() {
+			if ( Math.abs( window.pageYOffset - initialScrollPosition ) > 50 ) {
+				accept();
+			}
+		};
+
+		window.addEventListener( 'scroll', scrollFunction );
+	} else if ( overlay.classList.contains( 'hide-on-time' ) ) {
+		var timeout = parseInt( overlay.getAttribute( 'data-hide-timeout' ), 10 ) || 0;
+		setTimeout( accept, timeout * 1000 );
+	}
+
+	var accepted = false;
+	function accept( event ) {
+		if ( accepted ) {
+			return;
+		}
+		accepted = true;
+
+		if ( event && event.preventDefault ) {
+			event.preventDefault();
+		}
+
+		if ( overlay.classList.contains( 'hide-on-scroll' ) ) {
+			window.removeEventListener( 'scroll', scrollFunction );
+		}
+
+		var expireTime = new Date();
+		var consentExpiration = parseInt( overlay.getAttribute( 'data-consent-expiration' ), 10 ) || 0;
+		expireTime.setTime( expireTime.getTime() + ( consentExpiration * 24 * 60 * 60 * 1000 ) );
+
+		document.cookie = 'eucookielaw=' + expireTime.getTime() + ';path=/;expires=' + expireTime.toGMTString();
+		if ( overlay.classList.contains( 'ads-active' ) && overlay.classList.contains( 'hide-on-button' ) ) {
+			document.cookie = 'personalized-ads-consent=' + expireTime.getTime() + ';path=/;expires=' + expireTime.toGMTString();
+		}
+
+		fade( overlay, 'out', function() {
+			removeOverlay();
+			remove( container );
+		} );
+	}
+} )();
+;
+/**
+ * File navigation.js.
+ *
+ * Handles toggling the navigation menu for small screens and enables TAB key
+ * navigation support for dropdown menus.
+ */
+( function() {
+	var container, button, menu, links, i, len;
+
+	container = document.getElementById( 'site-navigation' );
+	if ( ! container ) {
+		return;
+	}
+
+	button = document.getElementById( 'primary-menu-button' );
+	if ( 'undefined' === typeof button ) {
+		return;
+	}
+
+	menu = container.getElementsByTagName( 'ul' )[0];
+
+	// Hide menu toggle button if menu is empty and return early.
+	if ( 'undefined' === typeof menu ) {
+		button.style.display = 'none';
+		return;
+	}
+
+	menu.setAttribute( 'aria-expanded', 'false' );
+	if ( -1 === menu.className.indexOf( 'nav-menu' ) ) {
+		menu.className += ' nav-menu';
+	}
+
+	button.onclick = function() {
+		if ( -1 !== container.className.indexOf( 'toggled' ) ) {
+			container.className = container.className.replace( ' toggled', '' );
+			button.setAttribute( 'aria-expanded', 'false' );
+			menu.setAttribute( 'aria-expanded', 'false' );
+		} else {
+			container.className += ' toggled';
+			button.setAttribute( 'aria-expanded', 'true' );
+			menu.setAttribute( 'aria-expanded', 'true' );
+		}
+	};
+
+	// Get all the link elements within the menu.
+	links    = menu.getElementsByTagName( 'a' );
+
+	// Each time a menu link is focused or blurred, toggle focus.
+	for ( i = 0, len = links.length; i < len; i++ ) {
+		links[i].addEventListener( 'focus', toggleFocus, true );
+		links[i].addEventListener( 'blur', toggleFocus, true );
+	}
+
+	/**
+	 * Sets or removes .focus class on an element.
+	 */
+	function toggleFocus() {
+		var self = this;
+
+		// Move up through the ancestors of the current link until we hit .nav-menu.
+		while ( -1 === self.className.indexOf( 'nav-menu' ) ) {
+
+			// On li elements toggle the class .focus.
+			if ( 'li' === self.tagName.toLowerCase() ) {
+				if ( -1 !== self.className.indexOf( 'focus' ) ) {
+					self.className = self.className.replace( ' focus', '' );
+				} else {
+					self.className += ' focus';
+				}
+			}
+
+			self = self.parentElement;
+		}
+	}
+
+	/**
+	 * Toggles `focus` class to allow submenu access on tablets.
+	 */
+	( function( container ) {
+		var touchStartFn, i,
+			parentLink = container.querySelectorAll( '.menu-item-has-children > a, .page_item_has_children > a' );
+
+		if ( 'ontouchstart' in window ) {
+			touchStartFn = function( e ) {
+				var menuItem = this.parentNode, i;
+
+				if ( ! menuItem.classList.contains( 'focus' ) ) {
+					e.preventDefault();
+					for ( i = 0; i < menuItem.parentNode.children.length; ++i ) {
+						if ( menuItem === menuItem.parentNode.children[i] ) {
+							continue;
+						}
+						menuItem.parentNode.children[i].classList.remove( 'focus' );
+					}
+					menuItem.classList.add( 'focus' );
+				} else {
+					menuItem.classList.remove( 'focus' );
+				}
+			};
+
+			for ( i = 0; i < parentLink.length; ++i ) {
+				parentLink[i].addEventListener( 'touchstart', touchStartFn, false );
+			}
+		}
+	}( container ) );
+} )();
+;
+( function () {
+	// Helper matches function (not a polyfill), compatible with IE 11.
+	function matches( el, sel ) {
+		if ( Element.prototype.matches ) {
+			return el.matches( sel );
+		}
+
+		if ( Element.prototype.msMatchesSelector ) {
+			return el.msMatchesSelector( sel );
+		}
+	}
+
+	// Helper closest parent node function (not a polyfill) based on
+	// https://developer.mozilla.org/en-US/docs/Web/API/Element/closest#Polyfill
+	function closest( el, sel ) {
+		if ( el.closest ) {
+			return el.closest( sel );
+		}
+
+		var current = el;
+
+		do {
+			if ( matches( el, sel ) ) {
+				return current;
+			}
+			current = current.parentElement || current.parentNode;
+		} while ( current !== null && current.nodeType === 1 );
+
+		return null;
+	}
+
+	function emitResizeEvent() {
+		if ( typeof( Event ) === 'function' ) {
+			window.dispatchEvent( new Event( 'resize' ) );
+		} else {
+			var event = window.document.createEvent( 'UIEvents' );
+			event.initUIEvent( 'resize', true, false, window, 0 );
+			window.dispatchEvent( event );
+		}
+	}
+
+	function updatePage() {
+		galleryWrapper();
+		outdentMedia();
+	}
+
+	// Wrap tiled galleries so we can outdent them
+	function galleryWrapper() {
+		var galleries = document.querySelectorAll( '.entry-content .tiled-gallery' );
+		var shouldOutdent = false;
+
+		for( var i = 0; i < galleries.length; i++ ) {
+			var gallery = galleries[ i ];
+			var parent = gallery.parentNode;
+
+			// If this tiled gallery has not yet been wrapped, add a wrapper.
+			if ( parent && ! parent.classList.contains( 'tiled-gallery-wrapper' ) ) {
+				var div = document.createElement( 'div' );
+				parent.insertBefore( div, gallery );
+				parent.removeChild( gallery );
+				div.appendChild( gallery );
+				div.classList.add( 'tiled-gallery-wrapper' );
+
+				// Outdent in the next event loop.
+				shouldOutdent = true;
+			}
+		}
+
+		if ( shouldOutdent ) {
+			emitResizeEvent();
+		}
+	}
+
+	// Add an extra class to large images and videos to outdent them.
+	function outdentMedia() {
+		var images = document.querySelectorAll( '.entry-content img, .post-image-link img' );
+
+		for ( var i = 0; i < images.length; i++ ) {
+			var img = images[ i ];
+			var caption = closest( img, 'figure' );
+			var newImg = new Image();
+
+			newImg.addEventListener(
+				'load',
+				// Use an IIFE to avoid scoping issues.
+				( function ( img, caption, newImg ) {
+					return function () {
+						var imgWidth = newImg.width;
+
+						if ( imgWidth >= 1100 &&
+								! closest( img, '.tiled-gallery-item-large' ) &&
+								! closest( img, '[class^="wp-block-"]' ) ) {
+							img.classList.add( 'size-big' );
+						}
+
+						if ( caption && caption.classList.contains( 'wp-caption' ) && imgWidth >= 1100 ) {
+							caption.classList.add( 'size-big' );
+						}
+					}
+				} )( img, caption, newImg )
+			);
+
+			newImg.src = img.getAttribute( 'src' );
+		}
+
+		var wrappers = document.querySelectorAll( '.entry-content .jetpack-video-wrapper' );
+
+		for ( var j = 0; j < wrappers.length; j++ ) {
+			var wrapper = wrappers[ j ];
+			var firstChild = wrapper.querySelector( ':first-child' );
+
+			if ( firstChild && firstChild.offsetWidth >= 1100 ) {
+				wrapper.classList.add( 'caption-big' );
+			}
+		}
+	}
+
+	// After DOM is ready.
+	if ( document.readyState !== 'loading' ) {
+		updatePage();
+	} else {
+		document.addEventListener( 'DOMContentLoaded', updatePage );
+	}
+
+	// After window loads.
+	if ( document.readyState === 'complete' ) {
+		outdentMedia();
+	} else {
+		window.addEventListener( 'load', outdentMedia );
+	}
+
+	// After window is resized or infinite scroll loads new posts
+	window.addEventListener( 'resize', updatePage );
+	document.body.addEventListener( 'is.post-load', updatePage );
+
+} )();
+;
+/**
+ * File skip-link-focus-fix.js.
+ *
+ * Helps with accessibility for keyboard only users.
+ *
+ * Learn more: https://git.io/vWdr2
+ */
+(function() {
+	var isIe = /(trident|msie)/i.test( navigator.userAgent );
+
+	if ( isIe && document.getElementById && window.addEventListener ) {
+		window.addEventListener( 'hashchange', function() {
+			var id = location.hash.substring( 1 ),
+				element;
+
+			if ( ! ( /^[A-z0-9_-]+$/.test( id ) ) ) {
+				return;
+			}
+
+			element = document.getElementById( id );
+
+			if ( element ) {
+				if ( ! ( /^(?:a|select|input|button|textarea)$/i.test( element.tagName ) ) ) {
+					element.tabIndex = -1;
+				}
+
+				element.focus();
+			}
+		}, false );
+	}
+})();
+;
+/**
+ * script-wpcom.js
+ *
+ * Handles toggling of body class name to help WordPress.com custom colors target color changes at different window sizes.
+ * The Custom Colors plugin does not support media queries.
+ */
+( function() {
+	function checkWidth( init ) {
+		// If browser is resized, check width again
+		if ( window.innerWidth > 992 ) {
+			document.body.classList.add( 'tablet-desktop' );
+		}
+		else {
+			if ( ! init ) {
+				document.body.classList.remove( 'tablet-desktop' );
+			}
+		}
+	}
+
+	function init() {
+		checkWidth( true );
+		window.addEventListener( 'resize', function() {
+			checkWidth( false);
+		} );
+	}
+
+	// After DOM is ready.
+	if ( document.readyState !== 'loading' ) {
+		init();
+	} else {
+		document.addEventListener( 'DOMContentLoaded', init );
+	}
+} )();
+;
