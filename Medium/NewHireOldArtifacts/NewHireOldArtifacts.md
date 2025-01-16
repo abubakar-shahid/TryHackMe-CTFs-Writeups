@@ -2,7 +2,7 @@
 
 ## Challenge Information
 - **Challenge Name**: New Hire Old Artifacts
-- **Category**: Log Analysis
+- **Category**: Forensics
 - **Difficulty Level**: Medium
 
 ## Task Description
