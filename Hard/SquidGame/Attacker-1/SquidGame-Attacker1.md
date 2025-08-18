@@ -6,9 +6,11 @@
 - **Difficulty Level**: Hard
 
 ## Challenge Description
+
 In the machine, we are given 5 .doc files each with an attacker number. Lets start with the first file and use OleTools for the analysis of hidden malicious content within this word document. We will be also using Exiftool and Strings for some simple tasks.
 
 ## Tools Used
+
 - OleTools (oledump, olevba)
 - Exiftool
 - Strings
@@ -16,7 +18,6 @@ In the machine, we are given 5 .doc files each with an attacker number. Lets sta
 
 ## Analysis
 
-### Document Analysis
 1. Lets use oledump to analyze the content imbedded in the doc file. Use the command `oledump.py attacker1.doc` and it will give all the embedded objects. The output will show us total 12 streams. One of them have `M` after the object number. This is the maloc that we are looking for, with stream `8`. Now, lets run a command to see all the contents of the dump. Use the command `olevba attacker1.doc` to see all the content. But in our case, all the contents are present as VBA objects and are strongly obfustaced. In the analysis given at the end of the result, we can see that a shell is used. In the VBA objects, there was a command starting with `VBA.Shell` that also gives us an evidence that a shell is executed, also, the command itself is the command, with a hint that the attacker is replacing `[]` with `A`. However, coming to the result part, it is also mentioned that base64 strings are used. Now, to deobfuscate the contents, we can run `oledump.py -s a attacker1.doc -S`, which will deobfuscate all the streams of the content. If you think that the result is too long, try running the command for a specific stream, start with 1 `oledump.py -s 1 attacker1.doc -S` and see which stream gives you the required result. On the stream 4 `oledump.py -s 4 attacker1.doc -S`, it gave some result `P^O^W^E^R^S^H^E^L^L ^-^N^o^P^r^o^f^i^l^e^ -^E^x^e^cutionPolicy B^^^yp^ass -encodedcommand 'encoded command'`. The command contains too many `` which we will replace with `A`. Then this command will become entirely base64 encoded. Decode this to string. Use cyberchef and add the filter of `Remove Null Bytes` and `Remove Special Characters` and you will get the exact code that the attacker has used. The domain that the attacker has used is in the line `15` of the code that we extracted, `http://fpetraardella.band/xap_102b-AZ1/704e.php?l=litten4.gas`.
 
 2. The filename that the attacker is trying to drop is at the end of line `18` `QdZGP.exe`.
@@ -40,4 +41,3 @@ In the machine, we are given 5 .doc files each with an attacker number. Lets sta
 11. From the above information, the name of the maloc stream is `ThisDocument`.
 
 ---
-*Note: This writeup is for educational purposes only.*

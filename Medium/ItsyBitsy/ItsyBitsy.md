@@ -6,9 +6,10 @@
 - **Difficulty Level**: Medium
 
 ## Task Description
+
 Here, we will be using an online web app 'Elastic', where all the logs are already present. Figure out the usage of the application and start your investigation!
 
-## Investigation Steps
+## Analysis
 
 1. Open the given ip address in the attackbox. A web app `elastic` will open. Go to the menu and navigate to the discover tab. There is a search bar in the right corner. Add the date filter `1st March, 2022`->`now`. Search, and the total number of events appearing will be the answer `1482`.
 
@@ -23,3 +24,5 @@ Here, we will be using an online web app 'Elastic', where all the logs are alrea
 6. Open the link `https://pastebin.com/yTg0Ah6a` in your browser. A file will appear with the name `secret.txt`.
 
 7. The content of the file is also visible in the pastebin web app `THM{SECRET__CODE}`.
+
+---

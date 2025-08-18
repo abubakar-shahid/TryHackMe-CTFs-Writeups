@@ -5,7 +5,7 @@
 - **Category**: Malware Analysis
 - **Difficulty Level**: Hard
 
-## Analysis Steps
+## Analysis
 
 1. Run the command:
 ```bash
@@ -38,3 +38,5 @@ To answer all the question, you may first decode all the lines containing the wo
 ```bash
 oledump.py attacker4.doc -s 7 -v | grep XORI
 ```
+
+---

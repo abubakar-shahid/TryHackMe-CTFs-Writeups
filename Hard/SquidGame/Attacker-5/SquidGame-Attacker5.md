@@ -5,7 +5,7 @@
 - **Category**: Malware Analysis
 - **Difficulty Level**: Hard
 
-## Analysis Steps
+## Analysis
 
 1. Running the command:
 ```bash
@@ -32,3 +32,5 @@ This will fetch all the content of the `shellcode`. This content contains answer
 6. In the same content, the port can be observed as well `8080`.
 
 7. In the same content, the two API's are also visible `LoadLibraryA, InternetOpenA`.
+
+---

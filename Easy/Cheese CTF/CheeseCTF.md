@@ -131,3 +131,5 @@ Now open another terminal in your local machine with `sudo su` and run the comma
 ssh -i /root/.ssh/id_rsa root@<IP_ADDRESS>
 ```
 This will login you as a root into Cheeze! Now just `cat /root/root.txt` and it will give the flag `THM{dca75486094810807faf4b7b0a929b11e5e0167c}`.
+
+---

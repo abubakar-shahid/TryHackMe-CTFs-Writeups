@@ -5,7 +5,7 @@
 - **Category**: Web Exploitation
 - **Difficulty Level**: Easy
 
-## Investigation Steps
+## Analysis
 
 1. **Initial Reconnaissance and Access:**
 First of all, I opened the URL and read the paragraph appearing on the screen carefully. It said that "logon to my computer and find the last three secret ingredients to finish my pickle-reverse potion." It also said that I do not know my password. Hence, the username must be somewhere near. So I opened the source code page and found the username `R1ckRul3s` in the comments. Now we had to find the login page. So I used `gobuster` for directory enumeration using the command:
@@ -44,3 +44,5 @@ which shows that root can do anything without the password. However, the root di
 sudo less /root/3rd.txt
 ```
 and finally! It gave the 3rd answer as well: **fleeb juice**.
+
+---

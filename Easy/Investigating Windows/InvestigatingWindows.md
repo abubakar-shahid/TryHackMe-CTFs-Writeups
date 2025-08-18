@@ -5,7 +5,7 @@
 - **Category**: Forensics
 - **Difficulty Level**: Easy
 
-## Investigation Steps
+## Analysis
 
 1. After opening the windows machine, Press `Win + R`, type `msinfo32`, and press Enter. This will display the informatin of the windows. The very first line, against the `OS Name` contains the answer: `Windows Server 2016`.
 
@@ -67,3 +67,5 @@ Also add a filter of the form date `02/02/2019` till date `04/02/2019` to show t
 15. Open `Windows Firewall and Advanced Security`. Click on `Inbound Rules` and then click on `Allow outside connections for development`. Here is the port `1337` under the column `Local Port`.
 
 16. In the `hosts.txt` file, the site against which we found the C2 ip is `google.com`.
+
+---

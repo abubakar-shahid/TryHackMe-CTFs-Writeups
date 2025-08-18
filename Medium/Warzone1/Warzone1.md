@@ -6,9 +6,10 @@
 - **Difficulty Level**: Medium
 
 ## Task Description
+
 In the lab, we have to analyze the suspecious traffic. In this lab, rather than using `Wireshark` for the packet analysis, we will be using `Brim`, which is more helpful in visualization of the information. Moreover, we will be using an online platform `VirusTotal`, which is an opensource online platform to provide information about the malicious ipaddresses, softwares, etc.
 
-## Investigation Steps
+## Analysis
 
 1. So in the first task, we will first open the pcap file in the Brim. It will load all the data and you will see a very colorful data. Now simply apply the filter of `http` in the search bar. This will show only the http requests. Now, in the each request try hovering over the fields of the request. You will notice a field `alert signature`. Copy its value, since this is the signature of the malware command `ET Malware MirrorBlast CnC Activity M3`.
 
@@ -33,3 +34,5 @@ In the lab, we have to analyze the suspecious traffic. In this lab, rather than 
 
 11. Now follow the stream for the second downladed msi file `10opd3r_load.msi`. Scroll down at the end of the stream. You will notice some loooong paragraphs again. Look in the last paragraph and find the file paths that are hidden here
 `C:\ProgramData\Local\Google\rebol-view-278-3-1.exe`, `C:\ProgramData\Local\Google\exemple.rb`. Write them comma separated.
+
+---

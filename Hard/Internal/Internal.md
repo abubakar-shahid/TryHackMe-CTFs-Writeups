@@ -1,5 +1,12 @@
 # Internal
 
+## Challenge Information
+- **Challenge Name**: Internal
+- **Category**: Web Penetration Testing
+- **Difficulty Level**: Hard
+
+## Analysis
+
 1. As the instructions were given to add the internal.thm to hosts file of our system, so i did so.
 Add `<ip_address>    internal.thm` in the hosts file:
 ```
@@ -138,4 +145,5 @@ Finally, I grabbed the root flag located at `/root/root.txt`:
 ```
 cat /root/root.txt
 ```
+
 ---

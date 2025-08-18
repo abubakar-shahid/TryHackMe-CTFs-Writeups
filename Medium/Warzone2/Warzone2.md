@@ -5,7 +5,7 @@
 - **Category**: Packet Analysis
 - **Difficulty Level**: Medium
 
-## Investigation Steps
+## Analysis
 
 1. Using brim, add a filter of `network trojan`. Copy the alert.signature field.
 
@@ -26,3 +26,5 @@
 9. Using brim, add filter of `64.225.65.166 | cut query`. It will give all 3 assossiated domains.
 
 10. Using brim, add filter of `142.93.211.176 | cut query`. It will give the assossiated domain.
+
+---

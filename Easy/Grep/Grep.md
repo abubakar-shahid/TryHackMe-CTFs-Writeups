@@ -5,7 +5,7 @@
 - **Category**: OSINT & Web Exploitation
 - **Difficulty Level**: Easy
 
-## Initial Enumeration
+## Analysis
 
 1. Since the task is of OSINT, we can clearly observe that the very first task is directly linked to it. Lets just visit the ip address given for the machine. But oops! it does not give any page. Lets run nmap on it with some details as well:
 ```bash
@@ -50,3 +50,5 @@ But this is giving only 3 ports which are not accessible. It means we have to tr
 nmap -p- leakchecker.grep.thm
 ```
 This will run check for all the ports. This will give as a port `51337`. So lets open the webpage with this port `https://leakchecker.grep.thm:51337/`. This takes us to a webpage where we will enter the same email that we found for the admin. On submitting the email, we will the password for the admin: `admin_tryhackme!`.
+
+---

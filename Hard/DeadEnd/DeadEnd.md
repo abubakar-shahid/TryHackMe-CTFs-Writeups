@@ -6,9 +6,11 @@
 - **Difficulty Level**: Hard
 
 ## Challenge Description
+
 There are two files given. The .mem file is the dump of RAM of Windows, while the .sys is the dump of virtual memory. Let's use volatility3, as given in the attackbox, and figure out the answers to the required tasks!
 
 ## Tools Used
+
 - Volatility 3
 - FTK Imager
 - Windows Event Viewer
@@ -30,8 +32,4 @@ There are two files given. The .mem file is the dump of RAM of Windows, while th
 
 4. In the text file path2.txt, we actually got the second part of the flag. So, we have to find the first part now. Since we are given a disk image, we should now analyze the logs of this image. Let's go to the directory `C:\Windows\System32\winevt\Logs\` which actually contains the windows event files. Since we are playing with a powershell script, so lets find the log file for the keyword powershell. But before that, export all the logs present in the log folder so that we can have access to the log files in real. Now, there is a powershell operational log file which we needed. Open the file in the Windows Event Viewer. Search for the keyword `connector.ps1` which was our powershell script. But no success. To find the first flag, only remaining big actual executables. So, export the Autoconnector.exe file from the directory that we discovered in the previous task. Double click on the executable to run it. After that, check the logs of your windows. You have to examine the same log file that we tried for the image previously. Search for the keyword connector.ps1 and you will see an event in which we can clearly see some flag being set in the registry hive. The value field gives us the first part of the flag `VEhNezZsNERfeTB1X2tOT3d`. Combine both the parts and decode it using base64. It will give us the complete actual flag `THM{6l4D_y0u_kNOw_h0w_2_p1vOT}`.
 
-## Flag
-`THM{6l4D_y0u_kNOw_h0w_2_p1vOT}`
-
 ---
-*Note: This writeup is for educational purposes only.*

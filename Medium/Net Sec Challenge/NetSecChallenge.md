@@ -1,5 +1,12 @@
 # Net Sec Challenge
 
+## Challenge Information
+- **Challenge Name**: Net Sec Challenge
+- **Category**: Network Exploitation
+- **Difficulty Level**: Medium
+
+## Analysis
+
 1. `nmap 10.10.16.138`
 
 2. `sudo nmap -sS -p 10000-20000 10.10.16.138`
@@ -30,4 +37,3 @@
 8. `sudo nmap -sN 10.10.14.15`
    
 ---
-

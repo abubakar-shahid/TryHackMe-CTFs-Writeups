@@ -6,9 +6,10 @@
 - **Difficulty Level**: Easy
 
 ## Initial Analysis
+
 On getting the target ip, as a tradition, i first conducted nmap analysis in which i found 4 ope ports. One was the current 8080, one was 22 and the other 2 were behind the firewalls. Moreover, i also conducted a directory enumeration p but did not find anything. I also tried to conduct a detailed nmap search for the services or vulnerabilites, but no use. Since we knew that both the client and the server are running on the same machine, it means that the server can be accessible in our local machine.
 
-## Exploitation Steps
+## Exploitation
 
 1. There is a feedback form in which i tried to send a command to my server: 
 ```javascript
@@ -31,3 +32,5 @@ On getting the target ip, as a tradition, i first conducted nmap analysis in whi
 ```
 
 4. On submitting this payload, i recieved a request on my server in which the conents of the flag were available `THM{83789a69074f636f64a38879cfcabe8b62305ee6}`.
+
+---

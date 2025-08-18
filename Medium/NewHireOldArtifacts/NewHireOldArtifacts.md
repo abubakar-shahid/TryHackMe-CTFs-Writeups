@@ -6,9 +6,10 @@
 - **Difficulty Level**: Medium
 
 ## Task Description
+
 In the given scenario, we have to analyze the given splunk and just answer the questions. Open the given ip address in your own browser if you have a vpn, otherwise use the attack box and access the ip address in its browser.
 
-## Investigation Steps
+## Analysis
 
 1. Search for `Password Viewer` on the Splunk. The path found will be `C:\Users\FINANC~1\AppData\Local\Temp\11111.exe`
 
@@ -64,3 +65,5 @@ It will reveal the path: `C:\\Users\\Finance01\\AppData\\Roaming\\EasyCalc\\Easy
 Image="C:\\Users\\Finance01\\AppData\\Roaming\\EasyCalc\\EasyCalc.exe"
 ```
 then open ImageLoaded and athe first 3 are the answer: `nw_elf.dll,ffmpeg.dll,nw.dll`
+
+---

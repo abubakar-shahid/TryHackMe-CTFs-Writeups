@@ -6,9 +6,10 @@
 - **Difficulty Level**: Medium
 
 ## Task Description
+
 In the task, we are given a pcap file and a .log file. We will be reading each question, and deciding on the spot that which file will be used to answer the specific question. we will be using wireshark or brim for file capture analysis, and process monitor for log analysis.
 
-## Investigation Steps
+## Analysis
 
 1. Use wiresahrk to analyze the pcap. Since the PrintNightmare exploit often involves SMB (Server Message Block), use the filter `smb`. This will give only 4 requests, identify the unique one and its ip `20.188.56.147`.
 
@@ -42,3 +43,5 @@ C:\Windows\System32\spool\SERVERS\printnightmare.gentilkiwi.com
 9. In the entire analysis, we can notice that the main process is with the id `2604` and the name is `spoolersv.exe`. Since the process id for elevated command prompt is required, which means that the command was run on windows command promtpt. So, in the process monitor, add the filter `cmd.exe`. This will give the child process with id `5408`. Hence the required answer is `5408,spoolersv.exe`.
 
 10. Now we know the parent process, so in the FullEventLogView we will find the the parent process id `5408` usinf ctrl+F and start searching for all the events assosiated with this process. Notice that if the description shows any 'command line' field. There are total 6 events that contains command line field and shows the command run on the cmd. Note that in the 4th one, the command includes administrators word, which means that this is the command used to elevate privileges `net localgroup administrators rjones /add`.
+
+---
