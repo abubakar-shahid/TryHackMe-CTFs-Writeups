@@ -1,0 +1,17 @@
+POST /index.php/component/users/?task=user.login&Itemid=101 HTTP/1.1
+Host: 10.10.25.13
+Content-Length: 116
+Cache-Control: max-age=0
+Origin: http://10.10.25.13
+DNT: 1
+Upgrade-Insecure-Requests: 1
+Content-Type: application/x-www-form-urlencoded
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Referer: http://10.10.25.13/index.php/component/users/?view=login&Itemid=101
+Accept-Encoding: gzip, deflate, br
+Accept-Language: en-US,en;q=0.9
+Cookie: eaa83fe8b963ab08ce9ab7d4a798de05=4vm45uiv9u25938r07o2pq8sf1
+Connection: keep-alive
+
+username=hello&password=hello&return=aHR0cDovLzEwLjEwLjI1LjEzL2luZGV4LnBocA%3D%3D&5cda5b4e146394339a90a67fecad7804=1
