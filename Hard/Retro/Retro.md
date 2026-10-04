@@ -4,7 +4,7 @@
 
 * **Challenge Name**: Retro
 * **Category**: Boot2Root
-* **Difficulty Level**: Easy
+* **Difficulty Level**: Hard
 
 ## Investigation Steps
 
