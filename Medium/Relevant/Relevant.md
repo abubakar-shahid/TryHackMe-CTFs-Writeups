@@ -1,11 +1,11 @@
 # **Relevant**
 
-all**enge Information
+## **Callenge Information**
 - **Challenge Name**: Relevant
 - **Category**: Web and SMB Exploitation
 - **Difficulty Level**: Medium
 
-aly**sis
+## **Analysis**
 
 1. **Reconnaissance**:
 The engagement began with a full port scan of the target using Nmap:
